@@ -1,8 +1,8 @@
-mod common;
+use crate::helpers;
 
 #[tokio::test]
 async fn health_check_works() {
-    let app = common::spawn_app().await;
+    let app = helpers::spawn_app().await;
     let client = reqwest::Client::new();
 
     let response = client
