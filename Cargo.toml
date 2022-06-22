@@ -2,6 +2,7 @@
 edition = "2021"
 name = "zero2prod"
 version = "0.1.0"
+
 [dependencies]
 actix-web = "*"
 chrono = "*"
@@ -17,35 +18,13 @@ reqwest = { version = "0.11", default-features = false, features = ["json", "rus
 rand = { version = "0.8", features = ["std_rng"] }
 thiserror = "1"
 anyhow = "1"
-
-[dependencies.secrecy]
-features = ["serde"]
-version = "0.8.0"
-
-[dependencies.serde]
-features = ["derive"]
-version = "1"
-
-[dependencies.sqlx]
-default-features = false
-features = ["runtime-actix-rustls", "macros", "postgres", "uuid", "chrono", "migrate", "offline"]
-version = "0.5.7"
-
-[dependencies.tokio]
-features = ["rt-multi-thread", "macros"]
-version = "*"
-
-[dependencies.tracing]
-features = ["log"]
-version = "0.1"
-
-[dependencies.tracing-subscriber]
-features = ["registry", "env-filter"]
-version = "0.3"
-
-[dependencies.uuid]
-features = ["v4"]
-version = "*"
+secrecy = { version = "0.8.0", features = ["serde"] }
+serde = { version = "1", features = ["derive"] }
+tokio = { version = "*", features = ["rt-multi-thread", "macros"] }
+tracing = { version = "0.1", features = ["log"] }
+sqlx = { version = "0.5.7", features = ["runtime-actix-rustls", "macros", "postgres", "uuid", "chrono", "migrate", "offline"] }
+tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
+uuid = { version = "*", features = ["v4"] }
 
 [dev-dependencies]
 once_cell = "1"
