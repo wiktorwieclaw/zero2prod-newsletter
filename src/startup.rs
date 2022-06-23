@@ -77,6 +77,7 @@ fn run(
             .route("/health_check", web::get().to(routes::health_check))
             .route("/subscriptions", web::post().to(routes::subscribe))
             .route("/subscriptions/confirm", web::get().to(routes::confirm))
+            .route("/newsletters", web::post().to(routes::publish_newsletter))
             .app_data(web::Data::clone(&db_pool))
             .app_data(web::Data::clone(&email_client))
             .app_data(web::Data::clone(&base_url))
