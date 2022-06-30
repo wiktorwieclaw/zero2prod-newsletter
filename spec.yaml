@@ -36,3 +36,8 @@ services:
         value: ${APP_URL}
 databases:
   - name: newsletter
+  - engine: PG
+    name: newsletter
+    num_nodes: 1
+    size: db-s-dev-database
+    version: "12"

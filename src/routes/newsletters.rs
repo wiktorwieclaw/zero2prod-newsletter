@@ -1,10 +1,12 @@
 use crate::{
-    authentication::{Credentials, validate_credentials, AuthError}, domain::SubscriberEmail, email_client::EmailClient,
+    authentication::{validate_credentials, AuthError, Credentials},
+    domain::SubscriberEmail,
+    email_client::EmailClient,
     error_reporting,
 };
-use actix_web::{http::header::HeaderMap, web, HttpResponse, HttpRequest};
+use actix_web::{http::header::HeaderMap, web, HttpRequest, HttpResponse};
 use anyhow::Context;
-use reqwest::{StatusCode, header::HeaderValue};
+use reqwest::{header::HeaderValue, StatusCode};
 use secrecy::Secret;
 use sqlx::PgPool;
 
@@ -60,7 +62,7 @@ pub async fn publish_newsletter(
     body: web::Json<BodyData>,
     pool: web::Data<PgPool>,
     email_client: web::Data<EmailClient>,
-    request: HttpRequest
+    request: HttpRequest,
 ) -> Result<HttpResponse, PublishError> {
     let credentials = basic_authentication(request.headers()).map_err(PublishError::AuthError)?;
     tracing::Span::current().record("username", &tracing::field::display(&credentials.username));
@@ -68,7 +70,7 @@ pub async fn publish_newsletter(
         .await
         .map_err(|e| match e {
             AuthError::InvalidCredentials(_) => PublishError::AuthError(e.into()),
-            AuthError::UnexpectedError(_) => PublishError::UnexpectedError(e.into())
+            AuthError::UnexpectedError(_) => PublishError::UnexpectedError(e.into()),
         })?;
     tracing::Span::current().record("user_id", &tracing::field::display(&user_id));
     let subscribers = get_confirmed_subscribers(&pool).await?;
@@ -148,6 +150,6 @@ pub fn basic_authentication(headers: &HeaderMap) -> Result<Credentials, anyhow::
         .to_string();
     Ok(Credentials {
         username,
-        password: Secret::new(password)
+        password: Secret::new(password),
     })
 }

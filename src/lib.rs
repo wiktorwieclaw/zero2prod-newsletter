@@ -6,5 +6,6 @@ pub mod error_reporting;
 pub mod routes;
 pub mod startup;
 pub mod telemetry;
+pub mod session_state;
 
 pub use startup::*;

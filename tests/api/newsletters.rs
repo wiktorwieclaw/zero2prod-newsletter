@@ -117,7 +117,7 @@ async fn non_existing_user_is_rejected() {
         .send()
         .await
         .expect("Failed to execute request");
-    
+
     assert_eq!(401, response.status().as_u16());
     assert_eq!(
         r#"Basic realm="publish""#,
