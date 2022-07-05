@@ -1,5 +1,6 @@
+use crate::authentication::reject_anonymus_user;
 use crate::configuration::DatabaseSettings;
-use crate::routes::{self, admin_dashboard};
+use crate::routes;
 use crate::{configuration::Settings, email_client::EmailClient};
 use actix_session::storage::RedisSessionStore;
 use actix_session::SessionMiddleware;
@@ -7,6 +8,7 @@ use actix_web::cookie::Key;
 use actix_web::{dev::Server, web, App, HttpServer};
 use actix_web_flash_messages::storage::CookieMessageStore;
 use actix_web_flash_messages::FlashMessagesFramework;
+use actix_web_lab::middleware::from_fn;
 use secrecy::{ExposeSecret, Secret};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
@@ -101,8 +103,16 @@ async fn run(
             .route("/health_check", web::get().to(routes::health_check))
             .route("/subscriptions", web::post().to(routes::subscribe))
             .route("/subscriptions/confirm", web::get().to(routes::confirm))
-            .route("/newsletters", web::post().to(routes::publish_newsletter))
-            .route("/admin/dashboard", web::get().to(admin_dashboard))
+            .service(
+                web::scope("/admin")
+                    .wrap(from_fn(reject_anonymus_user))
+                    .route("/dashboard", web::get().to(routes::admin_dashboard))
+                    .route("/password", web::get().to(routes::change_password_form))
+                    .route("/password", web::post().to(routes::change_password))
+                    .route("/logout", web::post().to(routes::log_out))
+                    .route("/newsletters", web::post().to(routes::publish_newsletter))
+                    .route("/newsletters", web::get().to(routes::publish_newsletter_form))
+            )
             .app_data(web::Data::clone(&db_pool))
             .app_data(web::Data::clone(&email_client))
             .app_data(web::Data::clone(&base_url))
